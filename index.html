@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <title>Bangla OCR Upload</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+  <div class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md text-center">
+    <h1 class="text-2xl font-bold text-green-600 mb-4">Bangla OCR Upload</h1>
+    <p class="mb-4">ক্যামেরা অথবা গ্যালারি থেকে ছবি সিলেক্ট করুন</p>
+
+    <!-- ক্যামেরা থেকে ছবি -->
+    <input type="file" accept="image/*" capture="environment" id="cameraInput" class="hidden" multiple>
+    <label for="cameraInput" class="cursor-pointer bg-green-500 text-white px-4 py-2 rounded-xl block mb-3">📷 ক্যামেরা থেকে তোলেন</label>
+
+    <!-- গ্যালারি থেকে ছবি -->
+    <input type="file" accept="image/*" id="galleryInput" class="hidden" multiple>
+    <label for="galleryInput" class="cursor-pointer bg-blue-500 text-white px-4 py-2 rounded-xl block mb-3">🖼️ গ্যালারি থেকে নির্বাচন করুন</label>
+
+    <!-- প্রিভিউ -->
+    <div id="previewContainer" class="grid grid-cols-3 gap-2 mb-4"></div>
+
+    <!-- আপলোড বাটন -->
+    <button id="uploadBtn" class="bg-purple-500 text-white px-6 py-2 rounded-xl">⬆️ আপলোড করুন</button>
+
+    <!-- প্রগ্রেস বার -->
+    <div class="w-full bg-gray-200 rounded-full h-2 mt-4">
+      <div id="progressBar" class="bg-purple-500 h-2 rounded-full w-0"></div>
+    </div>
+  </div>
+
+  <script>
+    const cameraInput = document.getElementById("cameraInput");
+    const galleryInput = document.getElementById("galleryInput");
+    const previewContainer = document.getElementById("previewContainer");
+    const uploadBtn = document.getElementById("uploadBtn");
+    const progressBar = document.getElementById("progressBar");
+
+    function previewImages(files) {
+      previewContainer.innerHTML = "";
+      Array.from(files).slice(0, 10).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = e => {
+          const img = document.createElement("img");
+          img.src = e.target.result;
+          img.className = "w-full h-24 object-cover rounded-lg border";
+          previewContainer.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    cameraInput.addEventListener("change", () => previewImages(cameraInput.files));
+    galleryInput.addEventListener("change", () => previewImages(galleryInput.files));
+
+    uploadBtn.addEventListener("click", () => {
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += 10;
+        progressBar.style.width = progress + "%";
+        if (progress >= 100) {
+          clearInterval(interval);
+          window.location.href = "thankyou.html";
+        }
+      }, 300);
+    });
+  </script>
+
+</body>
+</html>
